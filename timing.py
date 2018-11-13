@@ -93,8 +93,6 @@ class Timing:
         mark the change, both sensor output and time of event.
         Add these to class arrays from concatDataToArray()
 
-        By setting function params to true or false you can choose
-        if some or all sensor changes are recorded. 
         '''
 
         self.concatDataToArray(not GPIO.input(4),
@@ -106,19 +104,10 @@ class Timing:
         '''
         self.concatDataToArray( not GPIO.input(4), 0, datetime.datetime.now())
         
-    def lightOff(self, pin):
-        '''
-        '''
-        self.concatDataToArray( 0, 0, datetime.datetime.now())
-        
     def soundEdge(self, pin):
         '''
         '''
         self.concatDataToArray( not GPIO.input(4), 1, datetime.datetime.now())
-        
-    def soundOff(self, pin):
-        '''
-        '''
     
     
         
@@ -127,7 +116,10 @@ timingTrial = Timing(datetime.datetime.now()) #initialize class with current tim
 # timingTrial.toExcel(); # run function of choice
 # timingTrial.detectChange(True, False)
 
+'''
+Activate both sound and light sensor to fire events when a change occurs. 
+'''
 GPIO.add_event_detect(4, GPIO.BOTH, callback=timingTrial.detectChange)
-GPIO.add_event_detect(18, GPIO.RISING, callback=timingTrial.soundEdge)
+GPIO.add_event_detect(18, GPIO.BOTH, callback=timingTrial.soundEdge)
 
         

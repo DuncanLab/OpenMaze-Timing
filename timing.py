@@ -3,6 +3,7 @@ import time
 import threading # for threading to ensure time consistency
 import datetime
 from pandas import DataFrame # used for xlsx generation
+import pygame # for keypress detection and initial syncronization
 
 # Configure sensor input from Raspberry pi
 GPIO.setwarnings(False)
@@ -95,7 +96,7 @@ class Timing:
 
         '''
 
-        self.concatDataToArray(not GPIO.input(4),
+        self.concatDataToArray(int(not GPIO.input(4)),
                                    GPIO.input(18),
                                    datetime.datetime.now())
         
@@ -108,10 +109,47 @@ class Timing:
         '''
         '''
         self.concatDataToArray( not GPIO.input(4), 1, datetime.datetime.now())
-    
-    
+
+    def runTimingExperiment(self):
+        '''
+        Initial function run to start sensor readings and syncronize unity
+        game and raspberry pi.
+
+        Once 's' key is pressed on an attached keyboard, timing experiment will
+        start and output to a csv file.
+
+        Function will also listen for 'f' key press to stop sensor detection
+        and put all data into a xlsx file for output. 
+        '''
+
+        pygame.init()
+        pygame.display.set_mode((100,100))
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        print('Experiment START. Data collection init.')
+
+                        # Mark current time, save to var
+
+                        # Begin sensor output and save to arrays w/ timestamps
+
+                        GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
+                        GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
+                        
+                    if event.key == pygame.K_f:
+                        print('Experiment END. xlsx file generating.')
+
+                        # Stop sensor output
+
+                        # Push data arrays to xlsx file and output.
+
+                        # Terminate program
         
         
+    
 timingTrial = Timing(datetime.datetime.now()) #initialize class with current time
 # timingTrial.toExcel(); # run function of choice
 # timingTrial.detectChange(True, False)
@@ -119,7 +157,6 @@ timingTrial = Timing(datetime.datetime.now()) #initialize class with current tim
 '''
 Activate both sound and light sensor to fire events when a change occurs. 
 '''
-GPIO.add_event_detect(4, GPIO.BOTH, callback=timingTrial.detectChange)
-GPIO.add_event_detect(18, GPIO.BOTH, callback=timingTrial.soundEdge)
 
+timingTrial.runTimingExperiment();
         

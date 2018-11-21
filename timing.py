@@ -6,49 +6,56 @@ from pandas import DataFrame # used for xlsx generation
 import pygame # for keypress detection and initial syncronization
 import sys # for termination of program
 
-# Configure sensor input from Raspberry pi
+# Configure sensor inputs from Raspberry pi
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4, GPIO.IN) # photo sensor IN at pin 4
 GPIO.setup(18, GPIO.IN) # sound sensor IN at pin 18
 GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP) # button input IN at pin 26
 
-
 class Timing:
     '''
     Overarching class containing all timing-relevant functions.
 
-    The purpose of this class is to facillatate accurate timing
-    of certain events for OpenMaze (ie when a new trial starts
-    and a new screen appears in front of the user, is unity
-    reporting the same information as what is actually going on?)
+    The purpose of this class is to facillatate accurate (to 10
+    milliseconds) timing of certain events for OpenMaze
+    (ie when a new trial starts and a new screen appears in
+    front of the user, is Unity reporting the same information
+    as what is actually going on?)
 
-    Two basic sensors are used: a photo light sensor and a sound
+    Three basic sensors are used: a photo light sensor and a sound
     sensor are leveraged to trigger timing events between the
-    experiment running in Unity and the raspberry pi. 
+    experiment running in Unity and the raspberry pi. A simple
+    switch is used to determine when to start and stop the
+    experiment. 
     
     '''
-    # following three arrays are used to line up appropriate data for
-    # conversion to spreadsheet for processing.
-    
         
     def __init__(self, startTime):
         '''
         Initialize class with current time and store original
-        time.
+        time. Also initialize arrays to store data for sensor
+        fire events and corresponding times.
+
+        Finally, output current time and state that experiment
+        has loading and awaiting start. 
         '''
-        self.startTime = startTime
+        self.startTime = startTime # set time var to init time
         self.lightSensorArray = [] # init array of all data from light sensor
         self.soundSensorArray = [] # init array of all data from sound sensor
         self.timeDataArray = [] # init array of all captured time data
-        print(self.lightSensorArray, self.soundSensorArray, self.timeDataArray)
-        print(self.startTime) # print class start time for reference
-        self.experimentStart = False # Bool to know if first button has been clicked. 
+        self.experimentStart = False # Bool to know if button has been clicked. 
 
+        print(self.startTime)
+        print('Experiment has loaded, awaiting button press to start timing.')
+        
     def printSensorStream(self):
         '''
         Basic function to print out a stream of sensor data to the
-        console. 
+        console.
+
+        Use for debugging light and sound sensors when getting set
+        up. 
         '''
         while True:
             # flip photo sensore value for consistency with sounds sensor 
@@ -58,7 +65,10 @@ class Timing:
         '''
         Function prints out sensor data as
         (photo / sound / time in milliseconds since
-        start time). 
+        start time).
+
+        Use to test sensor and time integration as a stream
+        of moniterable outputs. 
         '''
         # open a new thread and report sensor data every x seconds
         threading.Timer(0.1000, self.sensorDataAndTime).start()

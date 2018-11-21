@@ -4,6 +4,7 @@ import threading # for threading to ensure time consistency
 import datetime
 from pandas import DataFrame # used for xlsx generation
 import pygame # for keypress detection and initial syncronization
+import sys # for termination of program
 
 # Configure sensor input from Raspberry pi
 GPIO.setwarnings(False)
@@ -78,7 +79,7 @@ class Timing:
         
         return(self.lightSensorArray.append(lightSensorInput),
                 self.soundSensorArray.append(soundSensorInput),
-                self.timeDataArray.append(currentTime))
+                self.timeDataArray.append(str(currentTime)))
 
     def toExcel(self):
         '''
@@ -86,9 +87,11 @@ class Timing:
         '''
         spread = DataFrame({'Light Sensor Input': self.lightSensorArray,
                             'Sound Sensor Input': self.soundSensorArray,
-                            'Current Time': self.timeDataArray})
+                            'Current Time': self.timeDataArray,
+                            'Start Time': str(self.startTime)
+                            })
         print(spread)
-        spread.to_excel(datetime.datetime.now() + 'timing_output.xlsx', sheet_name='timingSheet', index=False)
+        spread.to_excel(str(datetime.datetime.now()) + 'timing_output.xlsx', sheet_name='timingSheet', index=False)
 
     def detectChange(self, pin):
         '''
@@ -167,6 +170,8 @@ class Timing:
     def button_callback(self, pin):
         if not self.experimentStart:
             print('Experiment Started')
+            self.startTime = datetime.datetime.now()
+            print('new start time:' + str(self.startTime))
             GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
             GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
 
@@ -175,7 +180,11 @@ class Timing:
             GPIO.remove_event_detect(4)
             GPIO.remove_event_detect(18)
             print('Experiment End')
+
+            self.toExcel()
+            
             self.experimentStart = False
+            sys.exit()
 
                        
     

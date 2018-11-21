@@ -10,6 +10,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4, GPIO.IN) # photo sensor IN at pin 4
 GPIO.setup(18, GPIO.IN) # sound sensor IN at pin 18
+GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP) # button input IN at pin 26
 
 
 class Timing:
@@ -41,6 +42,7 @@ class Timing:
         self.timeDataArray = [] # init array of all captured time data
         print(self.lightSensorArray, self.soundSensorArray, self.timeDataArray)
         print(self.startTime) # print class start time for reference
+        self.experimentStart = False # Bool to know if first button has been clicked. 
 
     def printSensorStream(self):
         '''
@@ -86,7 +88,7 @@ class Timing:
                             'Sound Sensor Input': self.soundSensorArray,
                             'Current Time': self.timeDataArray})
         print(spread)
-        spread.to_excel('timing_output.xlsx', sheet_name='timingSheet', index=False)
+        spread.to_excel(datetime.datetime.now() + 'timing_output.xlsx', sheet_name='timingSheet', index=False)
 
     def detectChange(self, pin):
         '''
@@ -135,28 +137,78 @@ class Timing:
                         # Mark current time, save to var
 
                         # Begin sensor output and save to arrays w/ timestamps
+                        self.detectSurroundings()
 
-                        GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
-                        GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
-                        
+                         
                     if event.key == pygame.K_f:
                         print('Experiment END. xlsx file generating.')
 
                         # Stop sensor output
+                        self.endDetectSurroundings()
 
                         # Push data arrays to xlsx file and output.
 
                         # Terminate program
         
+    def detectSurroundings(self):
+        '''
         
+        '''
+        GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
+        GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
+
+    def endDetectSurroundings(self):
+        '''
+        
+        '''
+        GPIO.remove_event_detect(4)
+        GPIO.remove_event_detect(18)
+
+    def button_callback(self, pin):
+        if not self.experimentStart:
+            print('Experiment Started')
+            GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
+            GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
+
+            self.experimentStart = True
+        else:
+            GPIO.remove_event_detect(4)
+            GPIO.remove_event_detect(18)
+            print('Experiment End')
+            self.experimentStart = False
+
+                       
     
-timingTrial = Timing(datetime.datetime.now()) #initialize class with current time
+
 # timingTrial.toExcel(); # run function of choice
 # timingTrial.detectChange(True, False)
 
 '''
 Activate both sound and light sensor to fire events when a change occurs. 
 '''
+timingTrial = Timing(datetime.datetime.now()) #initialize class with current time
 
-timingTrial.runTimingExperiment();
+#timingTrial.runTimingExperiment();
+
+
+GPIO.add_event_detect(26,GPIO.RISING,callback=timingTrial.button_callback) # Setup event on pin 10 rising edge
+
+'''
+while True:
+    input_state = GPIO.input(26)
+    if input_state == False and experimentStart == False:
+        print('Experiment Started')
         
+        GPIO.add_event_detect(4, GPIO.BOTH, callback=timingTrial.detectChange)
+        GPIO.add_event_detect(18, GPIO.BOTH, callback=timingTrial.soundEdge)
+
+        experimentStart = True
+        time.sleep(0.2)
+    elif input_state == False and experimentStart == True:
+
+        GPIO.remove_event_detect(4)
+        GPIO.remove_event_detect(18)
+        print('Experiment End')
+        experimentStart = False
+        time.sleep(0.2)
+        '''

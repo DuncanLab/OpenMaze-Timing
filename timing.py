@@ -79,13 +79,14 @@ class Timing:
     def concatDataToArray(self, lightSensorInput, soundSensorInput, currentTime):
         '''
         Add line of processed data from sensors and time to appropriate
-        array. 
+        arrays.
+
+        This function exists in order to prep all sensor data to be placed
+        into a xlsx file. A data stream of 'raw' data is also printed for
+        experiment reference. 
         '''
         print('raw', lightSensorInput, soundSensorInput, str(currentTime-self.startTime))
-        #print('raw', lightSensorInput, soundSensorInput, currentTime)
         print('')
-        #print('processed', self.lightSensorArray, self.soundSensorArray)
-        #print('processed', self.lightSensorArray, self.soundSensorArray, self.timeDataArray)
         
         return(self.lightSensorArray.append(lightSensorInput),
                 self.soundSensorArray.append(soundSensorInput),
@@ -93,39 +94,41 @@ class Timing:
 
     def toExcel(self):
         '''
-        Convert all stored data to excel file and export to local path. 
+        Convert all stored data from created arrays to excel
+        file and export to local path.
+
+        Time of file creation is appended to name for easy
+        interpretation. 
         '''
         spread = DataFrame({'Light Sensor Input': self.lightSensorArray,
                             'Sound Sensor Input': self.soundSensorArray,
                             'Current Time': self.timeDataArray,
                             'Start Time': str(self.startTime)
                             })
-        print(spread)
-        spread.to_excel(str(datetime.datetime.now()) + 'timing_output.xlsx', sheet_name='timingSheet', index=False)
-
-    def detectChange(self, pin):
+        print(spread) # display spread output before conversion. 
+        spread.to_excel(str(datetime.datetime.now()) + '_timing_output.xlsx', sheet_name='timingSheet', index=False)
+       
+    def lightEdge(self, pin):
         '''
-        if either light sensor input or sound sensor input changes,
-        mark the change, both sensor output and time of event.
-        Add these to class arrays from concatDataToArray()
-
+        if the light sensor detects a change then event is fired to
+        record data of all sensors and current time. 
         '''
-
+        
         self.concatDataToArray(int(not GPIO.input(4)),
                                    GPIO.input(18),
                                    datetime.datetime.now())
         
-    def lightEdge(self, pin):
-        '''
-        '''
-        self.concatDataToArray( not GPIO.input(4), 0, datetime.datetime.now())
-        
     def soundEdge(self, pin):
         '''
+        if the sound sensor detects a change then event is fired
+        to add sound data to arrays, however sound data is represented
+        with a '1' since experimentation found that the sound sensor
+        would produce unpredictable results. 
         '''
+        
         self.concatDataToArray( not GPIO.input(4), 1, datetime.datetime.now())
 
-    def runTimingExperiment(self):
+    def runTimingExperimentWithKeyboard(self):
         '''
         Initial function run to start sensor readings and syncronize unity
         game and raspberry pi.
@@ -134,7 +137,11 @@ class Timing:
         start and output to a csv file.
 
         Function will also listen for 'f' key press to stop sensor detection
-        and put all data into a xlsx file for output. 
+        and put all data into a xlsx file for output.
+
+        DEPRECATED: experimentation showed that raspberry pi had trouble handling
+        keyboard listeners and sensor listeners without incurring significant
+        delays for when sensor data was reported. 
         '''
 
         pygame.init()
@@ -167,7 +174,7 @@ class Timing:
         '''
         
         '''
-        GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
+        GPIO.add_event_detect(4, GPIO.BOTH, callback=self.lightEdge)
         GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
 
     def endDetectSurroundings(self):
@@ -182,7 +189,7 @@ class Timing:
             print('Experiment Started')
             self.startTime = datetime.datetime.now()
             print('new start time:' + str(self.startTime))
-            GPIO.add_event_detect(4, GPIO.BOTH, callback=self.detectChange)
+            GPIO.add_event_detect(4, GPIO.BOTH, callback=self.lightEdge)
             GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
 
             self.experimentStart = True

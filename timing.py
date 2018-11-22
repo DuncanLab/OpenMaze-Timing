@@ -172,69 +172,50 @@ class Timing:
         
     def detectSurroundings(self):
         '''
-        
+        initialize light and sound sensors to detect surrounding. 
         '''
         GPIO.add_event_detect(4, GPIO.BOTH, callback=self.lightEdge)
         GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
 
     def endDetectSurroundings(self):
         '''
-        
+        terminate light and sound sensor tracking. 
         '''
         GPIO.remove_event_detect(4)
         GPIO.remove_event_detect(18)
 
     def button_callback(self, pin):
+        '''
+        Button Callback function responsible for running entire experiment.
+        This method was chosed due to its speed.
+        '''
+        
         if not self.experimentStart:
             print('Experiment Started')
             self.startTime = datetime.datetime.now()
             print('new start time:' + str(self.startTime))
+            print('To stop the experiment, simply click the button again at an time.')
+            print('Flow of sensor data will be written below for your reference')
             GPIO.add_event_detect(4, GPIO.BOTH, callback=self.lightEdge)
             GPIO.add_event_detect(18, GPIO.BOTH, callback=self.soundEdge)
 
             self.experimentStart = True
         else:
+            #terminate experiment, deactivate sensors. 
             GPIO.remove_event_detect(4)
             GPIO.remove_event_detect(18)
             print('Experiment End')
-
+            print('Sensors have been turned off and data is being exported to a .xlsx file in this directory.')
             self.toExcel()
-            
+            print('To start another experiment, please run this script again.')
             self.experimentStart = False
             sys.exit()
 
                        
     
+#initialize class with current time
 
-# timingTrial.toExcel(); # run function of choice
-# timingTrial.detectChange(True, False)
+timingTrial = Timing(datetime.datetime.now())
 
-'''
-Activate both sound and light sensor to fire events when a change occurs. 
-'''
-timingTrial = Timing(datetime.datetime.now()) #initialize class with current time
-
-#timingTrial.runTimingExperiment();
-
-
-GPIO.add_event_detect(26,GPIO.RISING,callback=timingTrial.button_callback) # Setup event on pin 10 rising edge
-
-'''
-while True:
-    input_state = GPIO.input(26)
-    if input_state == False and experimentStart == False:
-        print('Experiment Started')
-        
-        GPIO.add_event_detect(4, GPIO.BOTH, callback=timingTrial.detectChange)
-        GPIO.add_event_detect(18, GPIO.BOTH, callback=timingTrial.soundEdge)
-
-        experimentStart = True
-        time.sleep(0.2)
-    elif input_state == False and experimentStart == True:
-
-        GPIO.remove_event_detect(4)
-        GPIO.remove_event_detect(18)
-        print('Experiment End')
-        experimentStart = False
-        time.sleep(0.2)
-        '''
+# Setup event on pin 10 rising edge; this button listens for experiment start. 
+GPIO.add_event_detect(26,GPIO.RISING,callback=timingTrial.button_callback) 

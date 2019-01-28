@@ -106,7 +106,7 @@ class Timing:
                             'Start Time': str(self.startTime)
                             })
         print(spread) # display spread output before conversion. 
-        spread.to_excel('config5_timing_output.xlsx', sheet_name='timingSheet', index=False)
+        spread.to_excel('config_10_timing_output.xlsx', sheet_name='timingSheet', index=False)
        
     def lightEdge(self, pin):
         '''

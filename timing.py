@@ -17,7 +17,7 @@ class Timing:
     '''
     Overarching class containing all timing-relevant functions.
 
-    The purpose of this class is to facillatate accurate (to 10
+    The purpose of this class is to facilitate accurate (to 10
     milliseconds) timing of certain events for OpenMaze
     (ie when a new trial starts and a new screen appears in
     front of the user, is Unity reporting the same information
@@ -58,7 +58,7 @@ class Timing:
         up. 
         '''
         while True:
-            # flip photo sensore value for consistency with sounds sensor 
+            # flip photo sensor value for consistency with sounds sensor
             print(int(not GPIO.input(4)), GPIO.input(18))
 
     def sensorDataAndTime(self):
@@ -68,7 +68,7 @@ class Timing:
         start time).
 
         Use to test sensor and time integration as a stream
-        of moniterable outputs. 
+        of detectable outputs.
         '''
         # open a new thread and report sensor data every x seconds
         threading.Timer(0.1000, self.sensorDataAndTime).start()

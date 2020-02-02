@@ -4,8 +4,8 @@ This repository supports the main [OpenMaze](https://github.com/DuncanLab/OpenMa
 The purpose of this repo is to detect and analyze timing discrepancies in between when OpenMaze displays an arbitrary trial on screen versus when the output file 'thinks' that a certain action happened. This was achieved by using a Raspberry Pi as a third party computer against the machine that OpenMaze was running on. 
 
 In this repository you will find: 
-* schematics for 3D your own Raspberry Pi sensor housing which adheres to the screen of the computer running OpenMaze
-* Python code that creates log files from monitoring the OpenMaze software through the Raspberry Pi
+* schematics for 3D printing your own Raspberry Pi sensor housing which adheres to the screen of the computer running OpenMaze.
+* Python code that creates log files from monitoring the OpenMaze software through the Raspberry Pi.
 * R code for conducting analysis on these output files.
 
 ## Getting Started
@@ -14,7 +14,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to gt the project up and running: 
+What things you need to get the project up and running: 
 
 1. A Raspberry Pi with a photodiode sensor, a sound sensor, and a button. 
 2. Python configured on the Raspberry Pi. (This should already be done, just make sure you have Python 3)
@@ -65,7 +65,7 @@ Now that you have everything set up, the process for data collection and analysi
 
 Running the analysis is quite straightforward, simply run the R script also included in the repo and make sure that it is pointing to the right `.xlsx` spreadsheets that you collected in the previous step. The goal of this script is to identify scientifically relevant lag in the Unity system depending on which environments are being used. 
 
-Feel free to add any additional data analysis that you need and we recommend that you record test outputs with all of the environments that you plan on using for experimentation, as lag time differs depending on the elements in your scene. 
+Feel free to add any additional data analysis that you need. We also recommend that you record test outputs with all of the environments that you plan on using for experimentation, as lag time differs depending on the elements in your scene. 
 
 ## Contributing
 

@@ -56,7 +56,7 @@ Next, clone this repository on the machine that you will be using for data analy
 
 Now that you have everything set up, the process for data collection and analysis is as follows. 
 
-1. Make sure that OpenMaze is set up correctly with the alternating black square in the bottom right corner turned on. 
+1. Make sure that OpenMaze is set up correctly with the alternating black square in the bottom right corner turned on. You can learn how to do this [here](https://github.com/DuncanLab/OpenMaze-Timing/wiki/OpenMaze-Configuration).
 2. Run the Python script on the Raspberry Pi after attaching the light.
 3. When you are ready, press the input button on the Raspberry Pi and the spacebar on the OpenMaze set up simultaneously to begin recording with the Raspberry Pi. (Note: perfect syncrony is not necessary for accurate results as between-trial time is the measured metric, it just makes things simpler when viewing the data)
 4. When you have finished running your test OpenMaze configuration file, simply click the Raspberry Pi input button again and it will stop recording data and output a spreadsheet in `.xlsx` format. 

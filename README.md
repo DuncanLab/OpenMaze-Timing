@@ -22,6 +22,8 @@ What things you need to gt the project up and running:
 
 ## Hardware Set Up
 
+For a more detailed explanation of the hardware set up necessary for this project, please see the documentation [here](https://github.com/DuncanLab/OpenMaze-Timing/wiki/Raspberry-Pi-Set-Up). A breif overview is written below. 
+
 After acquiring the needed sensors, use the 3D models in `/3D_prints` to create housings for your sound and light sensors. This is especially important for the light sensor as the housing blocks out irrelevant light that could lead to innacurate results.  
 
 Next, hook up the button, sound sensor, and light sensor to your Raspberry Pi. The goal is to build a circuit structure that looks like the following: 
@@ -34,7 +36,6 @@ You can use whichever inputs you prefer, but the current code places sensors at 
 GPIO.setup(4, GPIO.IN) # photo sensor IN at pin 4
 GPIO.setup(18, GPIO.IN) # sound sensor IN at pin 18
 GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP) # button input IN at pin 26
-
 ```
 
 The last step is to attach the light sensor to the bottom right of the computer running OpenMaze. Double-sided tape is a great option, but you can use alternatives if needed.

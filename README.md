@@ -78,7 +78,7 @@ We use [SemVer](http://semver.org/) for versioning.
 ## Authors
 
 * **Alex Gordienko** - *Initial work* - [Website](http://alexgordienko.com)
-* **Kyle Nealy** - *Contributor* - [GitHub](https://github.com/AlexGordienko)
+* **Kyle Nealy** - *Contributor* - [GitHub](https://github.com/kbnealy)
 
 ## License
 

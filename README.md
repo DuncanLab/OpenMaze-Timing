@@ -22,7 +22,7 @@ What things you need to get the project up and running:
 
 ## Hardware Set Up
 
-For a more detailed explanation of the hardware set up necessary for this project, please see the documentation [here](https://github.com/DuncanLab/OpenMaze-Timing/wiki/Raspberry-Pi-Set-Up). A breif overview is written below. 
+For a more detailed explanation of the hardware set up necessary for this project, please see the documentation [here](https://github.com/DuncanLab/OpenMaze-Timing/wiki/Raspberry-Pi-Set-Up). A brief overview is written below. 
 
 After acquiring the needed sensors, use the 3D models in `/3D_prints` to create housings for your sound and light sensors. This is especially important for the light sensor as the housing blocks out irrelevant light that could lead to innacurate results.  
 
